@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПЛЕЯДА — Повернення до простору</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink:      #111111;
+            --ink-soft: #1E1A16;
+            --muted:    #5A504A;
+            --ghost:    #7A6F68;
+            --label:    #4A4240;
+            --paper:    #FDFBF7;
+            --paper-l:  #F8F3EB;
+            --bg:       #E8E2D8;
+            --cream:    #EDE3CC;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ── ЛОГОТИП ── */
+        .p-topbar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            padding: 1.8rem 3.5rem;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .p-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            pointer-events: all;
+        }
+
+        .p-wordmark {
+            font-size: 1.1rem;
+            letter-spacing: 0.5em;
+            color: var(--cream);
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* ── КНИГА ── */
+        .book-scene {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .book {
+            display: flex;
+            width: min(1100px, 94vw);
+            height: min(680px, 84vh);
+            position: relative;
+            filter: drop-shadow(0 40px 80px rgba(0,0,0,0.22))
+                    drop-shadow(0 8px 24px rgba(0,0,0,0.12));
+        }
+
+        /* Корінець */
+        .book::after {
+            content: '';
+            position: absolute;
+            left: 50%; top: 0;
+            transform: translateX(-50%);
+            width: 4px; height: 100%;
+            background: linear-gradient(180deg,
+                rgba(26,26,26,0.03) 0%,
+                rgba(26,26,26,0.18) 20%,
+                rgba(26,26,26,0.24) 50%,
+                rgba(26,26,26,0.18) 80%,
+                rgba(26,26,26,0.03) 100%
+            );
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* ── ЛІВА СТОРІНКА (ФОРМА) ── */
+        .page-left {
+            flex: 1;
+            background: var(--paper-l);
+            padding: 4.5rem 4rem 4rem 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Рядки рукопису */
+        .page-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 37px,
+                rgba(26,26,26,0.055) 37px,
+                rgba(26,26,26,0.055) 38px
+            );
+            background-position: 0 5.5rem;
+            pointer-events: none;
+        }
+
+        .page-header {
+            font-size: 0.8rem;
+            letter-spacing: 0.42em;
+            text-transform: uppercase;
+            color: var(--label);
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2.4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .field-wrap { display: flex; flex-direction: column; gap: 0.55rem; }
+
+        .field-label {
+            font-size: 0.82rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: var(--label);
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+
+        .field-input {
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: var(--ink);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(26,26,26,0.22);
+            padding: 0.55rem 0 0.65rem;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+
+        .field-input::placeholder { color: var(--ghost); opacity: 0.7; }
+        .field-input:focus        { border-bottom-color: var(--ink); }
+        .field-wrap:focus-within .field-label { color: var(--ink-soft); }
+
+        .form-error {
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: rgba(160,70,60,0.85);
+            text-align: center;
+            min-height: 1.4rem;
+        }
+
+        .form-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 1.3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-login {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.30em;
+            text-transform: uppercase;
+            padding: 18px 0;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .btn-login:hover { background: #2a2a2a; }
+
+        .form-hint {
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--muted);
+            text-align: center;
+        }
+        .form-hint a {
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 0.5px solid currentColor;
+            padding-bottom: 1px;
+        }
+        .form-hint a:hover { color: var(--ink); }
+
+        .page-num {
+            font-size: 0.82rem;
+            letter-spacing: 0.24em;
+            color: var(--ghost);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── ПРАВА СТОРІНКА (КІМНАТА) ── */
+        .page-right {
+            flex: 1;
+            background: #150F0A;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 4px 4px 0;
+            transition: background 1.4s ease;
+        }
+
+        /* ── КНИЖКОВІ ПОЛИЦІ ── */
+        .shelves-layer {
+            position: absolute;
+            inset: 0;
+            opacity: 0.06;
+            transition: opacity 1.4s ease;
+        }
+
+        /* ── ВІКНО — повністю переписано ── */
+        .window-wrap {
+            position: absolute;
+            top: 7%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            width: 160px;
+        }
+
+        /* Рама вікна */
+        .window-frame {
+            width: 160px;
+            height: 200px;
+            border: 3px solid rgba(180,160,120,0.18);
+            border-radius: 50% 50% 4px 4px / 30% 30% 4px 4px;
+            position: relative;
+            background: transparent;
+            box-shadow:
+                inset 0 0 0 1px rgba(180,160,120,0.08),
+                0 0 40px rgba(180,160,120,0.04);
+            overflow: hidden;
+        }
+
+        /* Скло — градієнт нічного неба */
+        .window-glass {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(ellipse at 50% 30%,
+                #1C2535 0%,
+                #121820 40%,
+                #0A0D12 100%
+            );
+            overflow: hidden;
+        }
+
+        /* Місяць */
+        .moon {
+            position: absolute;
+            top: 22%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 38% 38%,
+                #F0E8D0 0%,
+                #D4C8A0 45%,
+                #B8A870 100%
+            );
+            box-shadow:
+                0 0 20px rgba(220,205,160,0.35),
+                0 0 60px rgba(220,205,160,0.12),
+                0 0 100px rgba(220,205,160,0.06);
+            transition: all 1.2s ease;
+        }
+
+        /* Кратери на місяці */
+        .moon::before {
+            content: '';
+            position: absolute;
+            top: 28%;
+            left: 22%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(160,140,90,0.4);
+            box-shadow:
+                14px 8px 0 rgba(160,140,90,0.3),
+                6px 18px 0 rgba(160,140,90,0.25),
+                20px 18px 0 rgba(160,140,90,0.2);
+        }
+
+        /* Хмари */
+        .cloud {
+            position: absolute;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.04);
+            filter: blur(6px);
+            transition: all 1.4s ease;
+        }
+        .cloud-1 { width: 80px; height: 18px; top: 18%; left: -10px; animation: cloudDrift 18s ease-in-out infinite alternate; }
+        .cloud-2 { width: 60px; height: 14px; top: 32%; right: -5px; animation: cloudDrift 22s ease-in-out infinite alternate-reverse; }
+        .cloud-3 { width: 90px; height: 20px; top: 48%; left: -20px; animation: cloudDrift 26s ease-in-out infinite alternate; opacity: 0.5; }
+
+        @keyframes cloudDrift {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(30px); }
+        }
+
+        /* Зірки у вікні */
+        .star-field { position: absolute; inset: 0; }
+
+        .wstar {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background: #E8DFC8;
+        }
+
+        /* Краплі дощу на склі */
+        .rain-glass { position: absolute; inset: 0; pointer-events: none; }
+
+        .drop {
+            position: absolute;
+            width: 1.5px;
+            border-radius: 0 0 50% 50%;
+            background: linear-gradient(to bottom, transparent, rgba(200,220,240,0.5));
+            animation: dropFall linear infinite;
+        }
+
+        @keyframes dropFall {
+            0%   { transform: translateY(-20px); opacity: 0; }
+            10%  { opacity: 1; }
+            85%  { opacity: 0.8; }
+            100% { transform: translateY(210px); opacity: 0; }
+        }
+
+        /* Патьоки дощу — стікають по склу */
+        .streak {
+            position: absolute;
+            width: 1px;
+            background: linear-gradient(to bottom,
+                rgba(200,220,240,0.0),
+                rgba(200,220,240,0.25) 30%,
+                rgba(200,220,240,0.15)
+            );
+            border-radius: 0 0 2px 2px;
+            animation: streakRun linear infinite;
+        }
+
+        @keyframes streakRun {
+            0%   { transform: translateY(-100%); opacity: 0; }
+            15%  { opacity: 1; }
+            100% { transform: translateY(110%); opacity: 0; }
+        }
+
+        /* Перемички рами */
+        .window-cross-h {
+            position: absolute;
+            top: 50%;
+            left: 0; right: 0;
+            height: 2px;
+            background: rgba(180,160,120,0.15);
+        }
+        .window-cross-v {
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            width: 2px;
+            background: rgba(180,160,120,0.15);
+        }
+
+        /* Відлив підвіконня */
+        .window-sill {
+            width: 180px;
+            height: 8px;
+            background: linear-gradient(180deg, rgba(180,160,120,0.2) 0%, rgba(180,160,120,0.08) 100%);
+            margin: 0 auto;
+            border-radius: 0 0 3px 3px;
+        }
+
+        /* Місячне сяйво на підлозі */
+        .moon-light {
+            position: absolute;
+            bottom: 28%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 200px;
+            background: linear-gradient(180deg,
+                rgba(220,205,160,0.04) 0%,
+                rgba(220,205,160,0.02) 60%,
+                transparent 100%
+            );
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+            transition: opacity 1.2s ease;
+            pointer-events: none;
+        }
+
+        /* ── СВІЧКА ── */
+        .candle-glow {
+            position: absolute;
+            bottom: 14%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(255,185,65,0.14) 0%,
+                rgba(255,140,20,0.06) 40%,
+                transparent 70%
+            );
+            pointer-events: none;
+            transition: all 1.2s ease;
+            z-index: 4;
+        }
+
+        .candle-wrap {
+            position: absolute;
+            bottom: 17%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .flame {
+            width: 16px;
+            height: 30px;
+            position: relative;
+            margin-bottom: 2px;
+        }
+
+        .flame-inner {
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 8px; height: 22px;
+            background: radial-gradient(ellipse at 50% 80%,
+                #fff9d0 0%,
+                #FFD060 35%,
+                #FF8C00 75%,
+                transparent 100%
+            );
+            border-radius: 50% 50% 28% 28%;
+            animation: flameDance 1.9s ease-in-out infinite alternate;
+            filter: blur(0.4px);
+        }
+
+        .flame-outer {
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 16px; height: 30px;
+            background: radial-gradient(ellipse at 50% 80%,
+                rgba(255,210,60,0.3) 0%,
+                rgba(255,100,0,0.12) 55%,
+                transparent 100%
+            );
+            border-radius: 50% 50% 28% 28%;
+            animation: flameDance 2.3s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes flameDance {
+            0%   { transform: translateX(-50%) scaleX(1)    scaleY(1)    rotate(-1deg); }
+            33%  { transform: translateX(-50%) scaleX(0.91) scaleY(1.06) rotate(1.5deg); }
+            66%  { transform: translateX(-50%) scaleX(1.07) scaleY(0.96) rotate(-0.5deg); }
+            100% { transform: translateX(-50%) scaleX(0.95) scaleY(1.04) rotate(2deg); }
+        }
+
+        .candle-body {
+            width: 18px; height: 78px;
+            background: linear-gradient(to right, #C8BDAA, #EDE3CC 40%, #D8CDBA 70%, #C0B59E);
+            border-radius: 2px 2px 4px 4px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+
+        /* Фітіль */
+        .candle-body::before {
+            content: '';
+            position: absolute;
+            top: -6px; left: 50%;
+            transform: translateX(-50%);
+            width: 2px; height: 8px;
+            background: linear-gradient(to top, #2a1a08, #4a2a10);
+            border-radius: 1px;
+        }
+
+        /* Патьок воску */
+        .candle-body::after {
+            content: '';
+            position: absolute;
+            top: 8px; left: 2px;
+            width: 5px; height: 16px;
+            background: rgba(237,227,204,0.75);
+            border-radius: 0 0 5px 5px;
+            transform: rotate(-6deg);
+            filter: blur(0.3px);
+        }
+
+        /* Підсвічник */
+        .candle-holder {
+            width: 28px; height: 6px;
+            background: linear-gradient(to bottom, #8A7A60, #6A5A40);
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        /* ── ПІДЛОГА ── */
+        .room-floor {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 26%;
+            background: linear-gradient(to top, rgba(10,7,4,0.95), transparent);
+            z-index: 2;
+        }
+
+        /* ── ПІДПИС ── */
+        .room-label {
+            position: absolute;
+            bottom: 5%;
+            left: 0; right: 0;
+            text-align: center;
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            font-size: 0.92rem;
+            color: rgba(237,227,204,0.25);
+            letter-spacing: 0.12em;
+            transition: color 0.9s ease;
+            z-index: 6;
+        }
+
+        /* ── СТАНИ ОСВІТЛЕННЯ ── */
+        .page-right.lit-1 { background: #1D1610; }
+        .page-right.lit-1 .shelves-layer  { opacity: 0.11; }
+        .page-right.lit-1 .candle-glow    { width: 280px; height: 280px; background: radial-gradient(circle, rgba(255,190,65,0.18) 0%, rgba(255,130,20,0.07) 45%, transparent 70%); }
+        .page-right.lit-1 .room-label     { color: rgba(237,227,204,0.42); }
+        .page-right.lit-1 .moon           { box-shadow: 0 0 28px rgba(220,205,160,0.5), 0 0 70px rgba(220,205,160,0.18), 0 0 120px rgba(220,205,160,0.08); }
+
+        .page-right.lit-2 { background: #2A1E12; }
+        .page-right.lit-2 .shelves-layer  { opacity: 0.24; }
+        .page-right.lit-2 .candle-glow    { width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,195,70,0.24) 0%, rgba(255,140,25,0.09) 45%, transparent 70%); }
+        .page-right.lit-2 .room-label     { color: rgba(237,227,204,0.60); }
+        .page-right.lit-2 .moon           { box-shadow: 0 0 34px rgba(220,205,160,0.6), 0 0 80px rgba(220,205,160,0.22), 0 0 140px rgba(220,205,160,0.10); }
+        .page-right.lit-2 .moon-light     { opacity: 1.5; }
+
+        .page-right.lit-full { background: #3E2C16; }
+        .page-right.lit-full .shelves-layer  { opacity: 0.50; }
+        .page-right.lit-full .candle-glow    { width: 640px; height: 640px; background: radial-gradient(circle, rgba(255,205,80,0.32) 0%, rgba(255,150,30,0.12) 42%, transparent 65%); }
+        .page-right.lit-full .room-label     { color: rgba(237,227,204,0.85); }
+        .page-right.lit-full .moon           { width: 50px; height: 50px; box-shadow: 0 0 40px rgba(220,205,160,0.7), 0 0 100px rgba(220,205,160,0.28), 0 0 180px rgba(220,205,160,0.12); }
+
+        /* ── МОБАЙЛ ── */
+        @media (max-width: 700px) {
+            .book { flex-direction: column; height: auto; }
+            .page-left  { border-radius: 4px 4px 0 0; padding: 3rem 2.2rem; }
+            .page-right { border-radius: 0 0 4px 4px; min-height: 340px; }
+            html, body { overflow-y: auto; justify-content: flex-start; padding-top: 6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── ЛОГОТИП ── -->
+    <div class="p-topbar">
+        <a href="/" class="p-brand">
+            <svg width="44" height="44" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                <circle cx="18"  cy="75" r="5"   fill="#EDE3CC" opacity="0.65"/>
+                <circle cx="42"  cy="55" r="3.5" fill="#EDE3CC" opacity="0.60"/>
+                <circle cx="52"  cy="72" r="5"   fill="#EDE3CC" opacity="0.80"/>
+                <circle cx="62"  cy="85" r="3"   fill="#EDE3CC" opacity="0.55"/>
+                <circle cx="72"  cy="60" r="7"   fill="#EDE3CC" opacity="0.90"/>
+                <circle cx="90"  cy="50" r="3.5" fill="#EDE3CC" opacity="0.60"/>
+                <circle cx="100" cy="65" r="3"   fill="#EDE3CC" opacity="0.50"/>
+                <circle cx="68"  cy="38" r="3"   fill="#EDE3CC" opacity="0.55"/>
+                <line x1="18" y1="75" x2="42"  y2="55" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+                <line x1="42" y1="55" x2="52"  y2="72" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+                <line x1="52" y1="72" x2="72"  y2="60" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+                <line x1="72" y1="60" x2="90"  y2="50" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+                <line x1="90" y1="50" x2="100" y2="65" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+                <line x1="72" y1="60" x2="68"  y2="38" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+            </svg>
+            <span class="p-wordmark">ПЛЕЯДА</span>
+        </a>
+    </div>
+
+    <!-- ── КНИГА ── -->
+    <div class="book-scene">
+        <div class="book">
+
+            <!-- ЛІВА СТОРІНКА — ФОРМА -->
+            <div class="page-left">
+                <div class="page-header">Повернення до простору</div>
+
+                <form method="POST" class="form-body" id="login-form">
+                    {% csrf_token %}
+
+                    <div class="field-wrap">
+                        <label class="field-label" for="inp-email">Поштова адреса</label>
+                        <input class="field-input" id="inp-email" name="email" type="email"
+                               placeholder="ваша адреса у Плеяді..."
+                               autocomplete="email"/>
+                    </div>
+
+                    <div class="field-wrap">
+                        <label class="field-label" for="inp-pass">Таємний знак</label>
+                        <input class="field-input" id="inp-pass" name="password" type="password"
+                               placeholder="відомий лише вам..."
+                               autocomplete="current-password"/>
+                    </div>
+
+                    {% if error %}
+                        <div class="form-error">{{ error }}</div>
+                    {% endif %}
+                </form>
+
+                <div class="form-footer">
+                    <button class="btn-login" type="submit" form="login-form" id="btn-login">
+                        Відчинити двері
+                    </button>
+                    <p class="form-hint">
+                        Ще немає запису? <a href="{% url 'main:register' %}">Вписатися у книгу</a>
+                    </p>
+                </div>
+
+                <div class="page-num">I</div>
+            </div>
+
+            <!-- ПРАВА СТОРІНКА — КІМНАТА -->
+            <div class="page-right" id="room">
+
+                <!-- Полиці з книгами -->
+                <svg class="shelves-layer" viewBox="0 0 500 680"
+                     preserveAspectRatio="xMidYMid slice" fill="none">
+                    <!-- Полиця 1 -->
+                    <rect x="0"   y="148" width="500" height="3.5" fill="#C4A882" opacity="0.6"/>
+                    <rect x="18"  y="82"  width="22" height="66" rx="2" fill="#7A5C3E"/>
+                    <rect x="42"  y="90"  width="16" height="58" rx="2" fill="#5A3E2B"/>
+                    <rect x="60"  y="76"  width="28" height="72" rx="2" fill="#8B6F47"/>
+                    <rect x="90"  y="84"  width="14" height="64" rx="2" fill="#A0785A"/>
+                    <rect x="106" y="80"  width="24" height="68" rx="2" fill="#6B4F37"/>
+                    <rect x="160" y="78"  width="26" height="70" rx="2" fill="#7A5C3E"/>
+                    <rect x="188" y="86"  width="18" height="62" rx="2" fill="#C4A882"/>
+                    <rect x="248" y="82"  width="28" height="66" rx="2" fill="#8B6F47"/>
+                    <rect x="278" y="76"  width="20" height="72" rx="2" fill="#5A3E2B"/>
+                    <rect x="320" y="84"  width="24" height="64" rx="2" fill="#A0785A"/>
+                    <rect x="360" y="78"  width="26" height="70" rx="2" fill="#7A5C3E"/>
+                    <rect x="390" y="86"  width="16" height="62" rx="2" fill="#6B4F37"/>
+                    <rect x="440" y="80"  width="28" height="68" rx="2" fill="#8B6F47"/>
+                    <!-- Полиця 2 -->
+                    <rect x="0"   y="316" width="500" height="3.5" fill="#C4A882" opacity="0.6"/>
+                    <rect x="14"  y="256" width="26" height="60" rx="2" fill="#5A3E2B"/>
+                    <rect x="50"  y="260" width="22" height="56" rx="2" fill="#7A5C3E"/>
+                    <rect x="100" y="254" width="28" height="62" rx="2" fill="#8B6F47"/>
+                    <rect x="148" y="258" width="24" height="58" rx="2" fill="#A0785A"/>
+                    <rect x="200" y="252" width="20" height="64" rx="2" fill="#C4A882"/>
+                    <rect x="232" y="260" width="26" height="56" rx="2" fill="#6B4F37"/>
+                    <rect x="290" y="256" width="22" height="60" rx="2" fill="#7A5C3E"/>
+                    <rect x="350" y="252" width="24" height="64" rx="2" fill="#8B6F47"/>
+                    <rect x="398" y="258" width="26" height="58" rx="2" fill="#5A3E2B"/>
+                    <rect x="450" y="256" width="20" height="60" rx="2" fill="#A0785A"/>
+                    <!-- Полиця 3 -->
+                    <rect x="0"   y="490" width="500" height="3.5" fill="#C4A882" opacity="0.6"/>
+                    <rect x="20"  y="428" width="20" height="62" rx="2" fill="#8B6F47"/>
+                    <rect x="68"  y="432" width="18" height="58" rx="2" fill="#7A5C3E"/>
+                    <rect x="116" y="428" width="24" height="62" rx="2" fill="#A0785A"/>
+                    <rect x="172" y="430" width="22" height="60" rx="2" fill="#C4A882"/>
+                    <rect x="270" y="428" width="28" height="62" rx="2" fill="#6B4F37"/>
+                    <rect x="318" y="432" width="20" height="58" rx="2" fill="#8B6F47"/>
+                    <rect x="374" y="428" width="26" height="62" rx="2" fill="#7A5C3E"/>
+                    <rect x="450" y="434" width="18" height="56" rx="2" fill="#5A3E2B"/>
+                </svg>
+
+                <!-- Вікно -->
+                <div class="window-wrap">
+                    <div class="window-frame">
+                        <div class="window-glass">
+                            <!-- Зірки -->
+                            <div class="star-field" id="star-field"></div>
+
+                            <!-- Місяць -->
+                            <div class="moon" id="moon"></div>
+
+                            <!-- Хмари -->
+                            <div class="cloud cloud-1"></div>
+                            <div class="cloud cloud-2"></div>
+                            <div class="cloud cloud-3"></div>
+
+                            <!-- Дощ на склі -->
+                            <div class="rain-glass" id="rain-glass"></div>
+                        </div>
+
+                        <!-- Перемички рами -->
+                        <div class="window-cross-h"></div>
+                        <div class="window-cross-v"></div>
+                    </div>
+                    <div class="window-sill"></div>
+                </div>
+
+                <!-- Місячне сяйво на підлозі -->
+                <div class="moon-light"></div>
+
+                <!-- Сяйво свічки -->
+                <div class="candle-glow" id="candle-glow"></div>
+
+                <!-- Свічка -->
+                <div class="candle-wrap">
+                    <div class="flame">
+                        <div class="flame-outer"></div>
+                        <div class="flame-inner"></div>
+                    </div>
+                    <div class="candle-body"></div>
+                    <div class="candle-holder"></div>
+                </div>
+
+                <div class="room-floor"></div>
+                <div class="room-label" id="room-label">темрява чекає на вас...</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ── ЗІРКИ ──
+        const starField = document.getElementById('star-field');
+        const starPositions = [
+            [18,12],[45,8],[70,20],[110,6],[135,15],[22,35],[90,28],[155,10],
+            [30,55],[80,48],[125,42],[148,30],[12,70],[60,65],[105,72],[140,58]
+        ];
+        starPositions.forEach(function([x, y], i) {
+            const s = document.createElement('div');
+            s.className = 'wstar';
+            s.style.cssText = 'left:' + x + 'px;top:' + y + 'px;opacity:' +
+                (0.3 + Math.random() * 0.5) + ';animation:starTwink ' +
+                (2.5 + Math.random() * 3) + 's ease-in-out infinite ' +
+                (Math.random() * 2) + 's;';
+            starField.appendChild(s);
+        });
+
+        // ── КРАПЛІ ДОЩУ НА СКЛІ ──
+        const rainGlass = document.getElementById('rain-glass');
+        for (let i = 0; i < 22; i++) {
+            const d = document.createElement('div');
+            const isStreak = Math.random() > 0.6;
+            if (isStreak) {
+                d.className = 'streak';
+                const h = 30 + Math.random() * 80;
+                d.style.cssText =
+                    'left:'    + (Math.random() * 156) + 'px;' +
+                    'top:0;' +
+                    'height:'  + h + 'px;' +
+                    'animation-duration:' + (3 + Math.random() * 5) + 's;' +
+                    'animation-delay:' + (Math.random() * 4) + 's;' +
+                    'opacity:' + (0.2 + Math.random() * 0.4) + ';';
+            } else {
+                d.className = 'drop';
+                const h = 8 + Math.random() * 18;
+                d.style.cssText =
+                    'left:'    + (Math.random() * 156) + 'px;' +
+                    'top:0;' +
+                    'height:'  + h + 'px;' +
+                    'animation-duration:' + (2 + Math.random() * 4) + 's;' +
+                    'animation-delay:' + (Math.random() * 3) + 's;';
+            }
+            rainGlass.appendChild(d);
+        }
+
+        // ── АНІМАЦІЯ ЗІРОК (в CSS через JS) ──
+        const styleTag = document.createElement('style');
+        styleTag.textContent = '@keyframes starTwink{0%,100%{opacity:.15}50%{opacity:.85}}';
+        document.head.appendChild(styleTag);
+
+        // ── СТАНИ КІМНАТИ ──
+        const room      = document.getElementById('room');
+        const roomLabel = document.getElementById('room-label');
+        const moon      = document.getElementById('moon');
+        const emailInp  = document.getElementById('inp-email');
+        const passInp   = document.getElementById('inp-pass');
+
+        function updateRoom() {
+            const hasEmail = emailInp.value.trim().length > 0;
+            const hasPass  = passInp.value.length > 0;
+
+            room.classList.remove('lit-1', 'lit-2', 'lit-full');
+
+            if (hasEmail && hasPass) {
+                room.classList.add('lit-2');
+                roomLabel.textContent = 'двері відчиняються...';
+                moon.style.transform = 'translateX(-50%) scale(1.1)';
+            } else if (hasEmail) {
+                room.classList.add('lit-1');
+                roomLabel.textContent = 'хтось ступає у темряву...';
+                moon.style.transform = 'translateX(-50%) scale(1.05)';
+            } else {
+                roomLabel.textContent = 'темрява чекає на вас...';
+                moon.style.transform = 'translateX(-50%) scale(1)';
+            }
+        }
+
+        emailInp.addEventListener('input', updateRoom);
+        passInp.addEventListener('input',  updateRoom);
+
+        document.getElementById('btn-login').addEventListener('click', function () {
+            if (emailInp.value.trim() && passInp.value) {
+                room.classList.remove('lit-1', 'lit-2');
+                room.classList.add('lit-full');
+                roomLabel.textContent = '«Плеяда вітає вас вдома.»';
+                moon.style.transform = 'translateX(-50%) scale(1.15)';
+            }
+        });
+    </script>
+
+</body>
+</html>

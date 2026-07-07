@@ -1,2 +1,4 @@
 from django.http import HttpResponse
-def transaction_history(request): return HttpResponse("Дії")
+
+def user_dashboard(request):
+    return HttpResponse("<h1>Бюро — незабаром</h1>")

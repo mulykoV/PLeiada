@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПЛЕЯДА — Перша сторінка твоєї книги</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --ink: #111111; --ink-soft: #1E1A16; --muted: #5A504A;
+            --ghost: #7A6F68; --label: #4A4240; --paper: #FDFBF7;
+            --paper-l: #F5F0E6; --paper-r: #F8F3EB; --bg: #E8E2D8;
+            --error: rgba(160,70,60,0.85);
+        }
+        html, body {
+            height: 100%; font-family: 'Cormorant Garamond', serif;
+            background: var(--bg); color: var(--ink);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 100vh; overflow: hidden;
+        }
+        .p-topbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 1.8rem 3.5rem; display: flex; align-items: center;
+            z-index: 100; pointer-events: none;
+        }
+        .p-brand { display: flex; align-items: center; gap: 16px; text-decoration: none; pointer-events: all; }
+        .p-wordmark { font-size: 1.2rem; letter-spacing: 0.5em; color: var(--ink-soft); font-weight: 500; }
+        .book-scene { width: 100%; display: flex; justify-content: center; align-items: center; padding: 2rem; }
+        .book {
+            display: flex; width: min(1200px, 94vw); height: min(720px, 84vh);
+            position: relative;
+            filter: drop-shadow(0 40px 80px rgba(0,0,0,0.18)) drop-shadow(0 8px 20px rgba(0,0,0,0.12));
+        }
+        .book::after {
+            content: ''; position: absolute; left: 50%; top: 0;
+            transform: translateX(-50%); width: 4px; height: 100%;
+            background: linear-gradient(180deg, rgba(26,26,26,0.04) 0%, rgba(26,26,26,0.18) 20%, rgba(26,26,26,0.24) 50%, rgba(26,26,26,0.18) 80%, rgba(26,26,26,0.04) 100%);
+            z-index: 10; pointer-events: none;
+        }
+        .page-left {
+            flex: 1; background: var(--paper-l);
+            padding: 4.5rem 4rem 4rem 5rem;
+            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden; border-radius: 4px 0 0 4px;
+        }
+        .page-left::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 37px, rgba(26,26,26,0.06) 37px, rgba(26,26,26,0.06) 38px);
+            background-position: 0 5.5rem; pointer-events: none;
+        }
+        .page-left-header { font-size: 0.8rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--label); font-weight: 400; }
+        .quote-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2.5rem 0; position: relative; z-index: 1; }
+        .quote-text { font-family: 'Spectral', serif; font-style: italic; font-size: 2rem; line-height: 1.95; color: var(--ink-soft); transition: opacity 0.45s ease; min-height: 160px; font-weight: 400; }
+        .quote-ornament { display: flex; align-items: center; gap: 14px; margin: 2rem 0 1.4rem; opacity: 0.4; }
+        .quote-ornament-line { width: 60px; height: 0.5px; background: var(--ink); }
+        .quote-attr { font-size: 0.92rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--label); transition: opacity 0.45s ease; font-weight: 400; }
+        .page-num-left { font-size: 0.82rem; letter-spacing: 0.24em; color: var(--ghost); text-align: center; }
+        .page-right {
+            flex: 1; background: var(--paper-r);
+            padding: 4.5rem 5rem 4rem 4rem;
+            display: flex; flex-direction: column; justify-content: space-between;
+            position: relative; overflow: hidden; border-radius: 0 4px 4px 0;
+        }
+        .page-right::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 37px, rgba(26,26,26,0.05) 37px, rgba(26,26,26,0.05) 38px);
+            background-position: 0 5.5rem; pointer-events: none;
+        }
+        .page-right-header { font-size: 0.8rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--label); font-weight: 400; }
+        .form-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2rem; position: relative; z-index: 1; }
+        .field-wrap { display: flex; flex-direction: column; gap: 0.55rem; }
+        .field-label { font-size: 0.82rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--label); font-weight: 400; transition: color 0.3s; }
+        .field-input { font-family: 'Spectral', serif; font-style: italic; font-size: 1.3rem; color: var(--ink); background: transparent; border: none; border-bottom: 1px solid rgba(26,26,26,0.25); padding: 0.55rem 0 0.65rem; outline: none; width: 100%; transition: border-color 0.3s; }
+        .field-input::placeholder { color: var(--ghost); opacity: 0.75; font-style: italic; }
+        .field-input:focus { border-bottom-color: var(--ink); }
+        .field-wrap:focus-within .field-label { color: var(--ink-soft); }
+        .form-error { font-family: 'Spectral', serif; font-style: italic; font-size: 0.95rem; color: var(--error); text-align: center; min-height: 1.4rem; position: relative; z-index: 1; }
+        .form-footer { display: flex; flex-direction: column; gap: 1.3rem; position: relative; z-index: 1; }
+        .btn-register { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 0.30em; text-transform: uppercase; padding: 18px 0; background: var(--ink); color: var(--paper); border: none; cursor: pointer; width: 100%; transition: background 0.3s, transform 0.15s; }
+        .btn-register:hover { background: #2a2a2a; }
+        .form-hint { font-family: 'Spectral', serif; font-style: italic; font-size: 1rem; color: var(--muted); text-align: center; }
+        .form-hint a { color: var(--muted); text-decoration: none; border-bottom: 0.5px solid currentColor; padding-bottom: 1px; }
+        .form-hint a:hover { color: var(--ink); }
+        .page-num-right { font-size: 0.82rem; letter-spacing: 0.24em; color: var(--ghost); text-align: center; }
+        @media (max-width: 700px) {
+            .book { flex-direction: column; height: auto; }
+            .page-left { border-radius: 4px 4px 0 0; padding: 3rem 2.2rem; min-height: 260px; }
+            .page-right { border-radius: 0 0 4px 4px; padding: 3rem 2.2rem; }
+            html, body { overflow-y: auto; justify-content: flex-start; padding-top: 6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="p-topbar">
+        <a href="/" class="p-brand">
+            <svg width="56" height="56" viewBox="0 0 120 120" fill="none">
+                <circle cx="18" cy="75" r="5" fill="#1E1A16" opacity="0.75"/>
+                <circle cx="42" cy="55" r="3.5" fill="#1E1A16" opacity="0.7"/>
+                <circle cx="52" cy="72" r="5" fill="#1E1A16" opacity="0.9"/>
+                <circle cx="62" cy="85" r="3" fill="#1E1A16" opacity="0.65"/>
+                <circle cx="72" cy="60" r="7" fill="#1E1A16" opacity="1"/>
+                <circle cx="90" cy="50" r="3.5" fill="#1E1A16" opacity="0.7"/>
+                <circle cx="100" cy="65" r="3" fill="#1E1A16" opacity="0.6"/>
+                <circle cx="68" cy="38" r="3" fill="#1E1A16" opacity="0.6"/>
+                <line x1="18" y1="75" x2="42" y2="55" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="42" y1="55" x2="52" y2="72" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="52" y1="72" x2="62" y2="85" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="52" y1="72" x2="72" y2="60" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="72" y1="60" x2="90" y2="50" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="90" y1="50" x2="100" y2="65" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="72" y1="60" x2="68" y2="38" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+            </svg>
+            <span class="p-wordmark">ПЛЕЯДА</span>
+        </a>
+    </div>
+
+    <div class="book-scene">
+        <div class="book">
+            <div class="page-left">
+                <div class="page-left-header">Слово до нового читача</div>
+                <div class="quote-area">
+                    <div class="quote-text" id="quote-text">
+                        «Усе на світі може загубитись — лиш ім'я людини, вписане у книгу, живе вічно.»
+                    </div>
+                    <div class="quote-ornament">
+                        <div class="quote-ornament-line"></div>
+                        <svg width="11" height="11" viewBox="0 0 10 10" fill="none">
+                            <path d="M5,0 L5,10 M0,5 L10,5 M1.5,1.5 L8.5,8.5 M8.5,1.5 L1.5,8.5" stroke="#1A1A1A" stroke-width="0.8" stroke-linecap="round"/>
+                        </svg>
+                        <div class="quote-ornament-line"></div>
+                    </div>
+                    <div class="quote-attr" id="quote-attr">— Ліна Костенко</div>
+                </div>
+                <div class="page-num-left">I</div>
+            </div>
+
+            <div class="page-right">
+                <div class="page-right-header">Перший запис у книзі відвідувачів</div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-body">
+                        <div class="field-wrap">
+                            <label class="field-label" for="inp-name">Ваше ім'я</label>
+                            <input class="field-input" id="inp-name" name="name" type="text" placeholder="як підписуєте свої листи..." autocomplete="name"/>
+                        </div>
+                        <div class="field-wrap">
+                            <label class="field-label" for="inp-email">Поштова адреса</label>
+                            <input class="field-input" id="inp-email" name="email" type="email" placeholder="куди надсилати новини Плеяди..." autocomplete="email"/>
+                        </div>
+                        <div class="field-wrap">
+                            <label class="field-label" for="inp-password">Слово-пароль</label>
+                            <input class="field-input" id="inp-password" name="password" type="password" placeholder="відоме лише вам..." autocomplete="new-password"/>
+                        </div>
+                        {% if error %}
+                        <div class="form-error">{{ error }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-footer">
+                        <button class="btn-register" type="submit">Підписати книгу</button>
+                        <p class="form-hint">Вже є запис? <a href="/login/">Відчинити двері</a></p>
+                    </div>
+                </form>
+                <div class="page-num-right">II</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fieldQuotes = {
+            'inp-name':     { text: '«Усе на світі може загубитись — лиш ім\'я людини, вписане у книгу, живе вічно.»', attr: '— Ліна Костенко' },
+            'inp-email':    { text: '«Лист — це розмова душі з душею через мовчання простору.»', attr: '— Іван Франко' },
+            'inp-password': { text: '«Є слова, що гріють, як долоня матері. Є слова — мов зброя. Бережи своє.»', attr: '— Василь Стус' }
+        };
+        const quoteText = document.getElementById('quote-text');
+        const quoteAttr = document.getElementById('quote-attr');
+        function switchQuote(id) {
+            const q = fieldQuotes[id];
+            if (!q) return;
+            quoteText.style.opacity = '0';
+            quoteAttr.style.opacity = '0';
+            setTimeout(function() {
+                quoteText.textContent = q.text;
+                quoteAttr.textContent = q.attr;
+                quoteText.style.opacity = '1';
+                quoteAttr.style.opacity = '1';
+            }, 320);
+        }
+        ['inp-name','inp-email','inp-password'].forEach(function(id) {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('focus', function() { switchQuote(id); });
+        });
+    </script>
+</body>
+</html>
