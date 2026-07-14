@@ -714,7 +714,7 @@
         <!-- ДУМКА -->
         <article class="card-thought theme-{{ post.background|default:'default' }}">
             <div class="card-meta">
-                <span class="card-author">{{ post.author.first_name }} {{ post.author.last_name|slice:":1" }}.</span>
+                <span class="card-author">{{ post.author.first_name|default:post.author.username }}{% if post.author.last_name %} {{ post.author.last_name|slice:":1" }}.{% endif %}.</span>
                 <span class="card-date">{{ post.created_at|date:"d.m.Y, H:i" }}</span>
             </div>
             <p class="thought-body">{{ post.body }}</p>
@@ -747,7 +747,7 @@
                 <div class="poem-ornament-line"></div>
             </div>
             <p class="poem-attr">
-                {{ post.author.first_name }} {{ post.author.last_name|slice:":1" }}.
+                {{ post.author.first_name|default:post.author.username }} {% if post.author.last_name %}{{ post.author.last_name|slice:":1" }}.{% endif %}
                 · {{ post.created_at|date:"d.m.Y" }}
             </p>
             <div class="card-actions">
@@ -780,10 +780,10 @@
                 <div class="book-cover">
                     <div>
                         <p style="font-size:0.72rem; letter-spacing:0.3em; color:#8C827A; text-transform:uppercase; margin-bottom:0.85rem;">
-                            Проза · {{ post.author.first_name }} {{ post.author.last_name|slice:":1" }}.
+                            Проза · {{ post.author.first_name|default:post.author.username }}{% if post.author.last_name %} {{ post.author.last_name|slice:":1" }}.{% endif %}
                         </p>
                         <h3 class="book-title">{{ post.title|default:"Без назви" }}</h3>
-                        <p class="book-author-line">— {{ post.author.first_name }} {{ post.author.last_name }}</p>
+                        <p class="book-author-line">— {{ post.author.first_name|default:post.author.username }}{% if post.author.last_name %} {{ post.author.last_name|slice:":1" }}.{% endif %}</p>
                     </div>
                     <div class="book-footer">
                         <span class="book-open-hint">Натисніть, щоб читати</span>

@@ -5,8 +5,6 @@ from django.contrib import messages
 
 
 def register_page(request):
-    if request.user.is_authenticated:
-        return redirect('feed')
 
     error = None
 
@@ -29,6 +27,6 @@ def register_page(request):
                 first_name=name,
             )
             login(request, user)
-            return redirect('feed')
+            return redirect('main:feed')
 
     return render(request, 'main/register.html', {'error': error})

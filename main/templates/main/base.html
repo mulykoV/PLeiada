@@ -452,7 +452,7 @@
     <!-- ── НАВ ── -->
     <div class="p-full-width">
         <nav class="p-nav">
-            <a href="{% url 'home' %}" class="p-nav-brand">
+            <a href="{% url 'main:base' %}" class="p-nav-brand">
                 <svg width="42" height="42" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <line x1="18"  y1="75" x2="42"  y2="55" stroke="#6E655F" stroke-width="1" opacity="0.35"/>
                     <line x1="42"  y1="55" x2="52"  y2="72" stroke="#6E655F" stroke-width="1" opacity="0.35"/>
@@ -473,8 +473,8 @@
                 <span class="p-nav-wordmark">ПЛЕЯДА</span>
             </a>
             <div class="p-nav-links">
-                <a class="p-btn-ghost" href="{% url 'login' %}">Увійти</a>
-                <a class="p-btn-solid" href="{% url 'register' %}">Приєднатися</a>
+                <a class="p-btn-ghost" href="{% url 'main:login' %}">Увійти</a>
+                <a class="p-btn-solid" href="{% url 'main:register' %}">Приєднатися</a>
             </div>
         </nav>
     </div>
@@ -595,8 +595,8 @@
                 ми збираємо тих, хто готовий зануритися в глибину живого слова.
             </p>
             <div class="p-cta-btns">
-                <a class="p-btn-cta" href="{% url 'register' %}">Стати частиною Плеяди</a>
-                <a class="p-btn-cta-out" href="{% url 'login' %}">Увійти до простору</a>
+                <a class="p-btn-cta" href="{% url 'main:register' %}">Стати частиною Плеяди</a>
+                <a class="p-btn-cta-out" href="{% url 'main:login' %}">Увійти до простору</a>
             </div>
         </div>
     </div>

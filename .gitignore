@@ -1,0 +1,24 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Віртуальні оточення
+venv/
+env/
+ENV/
+.env
+
+# Налаштування IDE та системні файли
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Секретні налаштування (зазвичай для локальної розробки)
+local_settings.py
+secrets.json

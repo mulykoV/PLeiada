@@ -35,7 +35,7 @@
             overflow: hidden;
         }
 
-        /* ── ЛОГОТИП ── */
+        /* ── ЛОГОТИП (уніфіковано з register.html) ── */
         .p-topbar {
             position: fixed;
             top: 0; left: 0;
@@ -50,16 +50,15 @@
         .p-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             text-decoration: none;
             pointer-events: all;
         }
 
         .p-wordmark {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             letter-spacing: 0.5em;
-            color: var(--cream);
-            opacity: 0.8;
+            color: var(--ink-soft);
             font-weight: 500;
         }
 
@@ -254,7 +253,7 @@
             transition: opacity 1.4s ease;
         }
 
-        /* ── ВІКНО — повністю переписано ── */
+        /* ── ВІКНО ── */
         .window-wrap {
             position: absolute;
             top: 7%;
@@ -264,7 +263,6 @@
             width: 160px;
         }
 
-        /* Рама вікна */
         .window-frame {
             width: 160px;
             height: 200px;
@@ -278,7 +276,6 @@
             overflow: hidden;
         }
 
-        /* Скло — градієнт нічного неба */
         .window-glass {
             position: absolute;
             inset: 0;
@@ -291,7 +288,6 @@
             overflow: hidden;
         }
 
-        /* Місяць */
         .moon {
             position: absolute;
             top: 22%;
@@ -312,7 +308,6 @@
             transition: all 1.2s ease;
         }
 
-        /* Кратери на місяці */
         .moon::before {
             content: '';
             position: absolute;
@@ -328,7 +323,6 @@
                 20px 18px 0 rgba(160,140,90,0.2);
         }
 
-        /* Хмари */
         .cloud {
             position: absolute;
             border-radius: 40px;
@@ -345,7 +339,6 @@
             100% { transform: translateX(30px); }
         }
 
-        /* Зірки у вікні */
         .star-field { position: absolute; inset: 0; }
 
         .wstar {
@@ -356,7 +349,6 @@
             background: #E8DFC8;
         }
 
-        /* Краплі дощу на склі */
         .rain-glass { position: absolute; inset: 0; pointer-events: none; }
 
         .drop {
@@ -374,7 +366,6 @@
             100% { transform: translateY(210px); opacity: 0; }
         }
 
-        /* Патьоки дощу — стікають по склу */
         .streak {
             position: absolute;
             width: 1px;
@@ -393,7 +384,6 @@
             100% { transform: translateY(110%); opacity: 0; }
         }
 
-        /* Перемички рами */
         .window-cross-h {
             position: absolute;
             top: 50%;
@@ -409,7 +399,6 @@
             background: rgba(180,160,120,0.15);
         }
 
-        /* Відлив підвіконня */
         .window-sill {
             width: 180px;
             height: 8px;
@@ -418,7 +407,6 @@
             border-radius: 0 0 3px 3px;
         }
 
-        /* Місячне сяйво на підлозі */
         .moon-light {
             position: absolute;
             bottom: 28%;
@@ -517,7 +505,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
 
-        /* Фітіль */
         .candle-body::before {
             content: '';
             position: absolute;
@@ -528,7 +515,6 @@
             border-radius: 1px;
         }
 
-        /* Патьок воску */
         .candle-body::after {
             content: '';
             position: absolute;
@@ -540,7 +526,6 @@
             filter: blur(0.3px);
         }
 
-        /* Підсвічник */
         .candle-holder {
             width: 28px; height: 6px;
             background: linear-gradient(to bottom, #8A7A60, #6A5A40);
@@ -603,24 +588,25 @@
 </head>
 <body>
 
-    <!-- ── ЛОГОТИП ── -->
+    <!-- ── ЛОГОТИП (той самий, що на register.html) ── -->
     <div class="p-topbar">
         <a href="/" class="p-brand">
-            <svg width="44" height="44" viewBox="0 0 120 120" fill="none" aria-hidden="true">
-                <circle cx="18"  cy="75" r="5"   fill="#EDE3CC" opacity="0.65"/>
-                <circle cx="42"  cy="55" r="3.5" fill="#EDE3CC" opacity="0.60"/>
-                <circle cx="52"  cy="72" r="5"   fill="#EDE3CC" opacity="0.80"/>
-                <circle cx="62"  cy="85" r="3"   fill="#EDE3CC" opacity="0.55"/>
-                <circle cx="72"  cy="60" r="7"   fill="#EDE3CC" opacity="0.90"/>
-                <circle cx="90"  cy="50" r="3.5" fill="#EDE3CC" opacity="0.60"/>
-                <circle cx="100" cy="65" r="3"   fill="#EDE3CC" opacity="0.50"/>
-                <circle cx="68"  cy="38" r="3"   fill="#EDE3CC" opacity="0.55"/>
-                <line x1="18" y1="75" x2="42"  y2="55" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
-                <line x1="42" y1="55" x2="52"  y2="72" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
-                <line x1="52" y1="72" x2="72"  y2="60" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
-                <line x1="72" y1="60" x2="90"  y2="50" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
-                <line x1="90" y1="50" x2="100" y2="65" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
-                <line x1="72" y1="60" x2="68"  y2="38" stroke="#EDE3CC" stroke-width="1" opacity="0.22"/>
+            <svg width="56" height="56" viewBox="0 0 120 120" fill="none">
+                <circle cx="18" cy="75" r="5" fill="#1E1A16" opacity="0.75"/>
+                <circle cx="42" cy="55" r="3.5" fill="#1E1A16" opacity="0.7"/>
+                <circle cx="52" cy="72" r="5" fill="#1E1A16" opacity="0.9"/>
+                <circle cx="62" cy="85" r="3" fill="#1E1A16" opacity="0.65"/>
+                <circle cx="72" cy="60" r="7" fill="#1E1A16" opacity="1"/>
+                <circle cx="90" cy="50" r="3.5" fill="#1E1A16" opacity="0.7"/>
+                <circle cx="100" cy="65" r="3" fill="#1E1A16" opacity="0.6"/>
+                <circle cx="68" cy="38" r="3" fill="#1E1A16" opacity="0.6"/>
+                <line x1="18" y1="75" x2="42" y2="55" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="42" y1="55" x2="52" y2="72" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="52" y1="72" x2="62" y2="85" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="52" y1="72" x2="72" y2="60" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="72" y1="60" x2="90" y2="50" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="90" y1="50" x2="100" y2="65" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
+                <line x1="72" y1="60" x2="68" y2="38" stroke="#1E1A16" stroke-width="1.2" opacity="0.35"/>
             </svg>
             <span class="p-wordmark">ПЛЕЯДА</span>
         </a>

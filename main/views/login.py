@@ -4,8 +4,6 @@ from django.contrib.auth.decorators import login_required
 
 
 def login_page(request):
-    if request.user.is_authenticated:
-        return redirect('feed')
 
     error = None
 
@@ -19,7 +17,7 @@ def login_page(request):
             user = authenticate(request, username=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('feed')
+                return redirect('main:feed')
             else:
                 error = 'Невірна поштова адреса або слово-пароль'
 
